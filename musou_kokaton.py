@@ -224,7 +224,13 @@ class Enemy(pg.sprite.Sprite):
 
 
 class Gravity(pg.sprite.Sprite):
+    """
+    重力場に関するクラス
+    """
     def __init__(self, life=400):
+        """
+        life：発動時間(400フレーム)
+        """
         super().__init__()
 
         self.image = pg.Surface((WIDTH, HEIGHT))  # 空のSurface
@@ -239,6 +245,9 @@ class Gravity(pg.sprite.Sprite):
         #     explosions.add(Explosion(enemies.rect.center))
 
     def update(self):
+        """
+        発動時間lifeを1減算し、0未満になったらkillする
+        """
         self.life -= 1
         if self.life < 0:
             self.kill()
