@@ -46,6 +46,7 @@ class Bird(pg.sprite.Sprite):
         pg.K_DOWN: (0, +1),
         pg.K_LEFT: (-1, 0),
         pg.K_RIGHT: (+1, 0),
+        pg.K_LSHIFT:(0,0),
     }
 
     def __init__(self, num: int, xy: tuple[int, int]):
@@ -72,6 +73,8 @@ class Bird(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = xy
         self.speed = 10
+        self.high_speed = 20
+
 
     def change_img(self, num: int, screen: pg.Surface):
         """
@@ -93,6 +96,10 @@ class Bird(pg.sprite.Sprite):
             if key_lst[k]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
+            if key_lst[pg.K_LSHIFT]:
+                self.speed = self.high_speed
+            else:
+                self.speed = 10
         self.rect.move_ip(self.speed*sum_mv[0], self.speed*sum_mv[1])
         if check_bound(self.rect) != (True, True):
             self.rect.move_ip(-self.speed*sum_mv[0], -self.speed*sum_mv[1])
