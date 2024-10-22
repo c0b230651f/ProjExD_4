@@ -223,6 +223,32 @@ class Enemy(pg.sprite.Sprite):
         self.rect.move_ip(self.vx, self.vy)
 
 
+class Gravity(pg.sprite.Sprite):
+    def __init__(self, life=400):
+        super().__init__()
+
+        self.image = pg.Surface((WIDTH, HEIGHT))  # 空のSurface
+        pg.draw.rect(self.image, (0, 0, 0), (0, 0, WIDTH, HEIGHT))
+        self.image.set_alpha(200)  # 半透明化
+        self.life = life  # 発動時間
+        self.rect = self.image.get_rect()
+
+        # for gravity in pg.sprite.groupcollide(gravities, bombs, False, True):
+        #     explosions.add(Explosion(bombs.rect.center))
+        # for enemy in pg.sprite.groupcollide(gravities, enemies, False, True):
+        #     explosions.add(Explosion(enemies.rect.center))
+
+    def update(self):
+        self.life -= 1
+        if self.life < 0:
+            self.kill()
+        # for bomb in pg.sprite.spritecollide(self, bombs, True):
+        #     explosions.add(Explosion(bomb.rect.center))
+        # for enemy in pg.sprite.spritecollide(self, enemies, True):
+        #     explosions.add(Explosion(enemy.rect.center))
+        # #screen.blit(self.image, self.rect)
+
+
 class Score:
     """
     打ち落とした爆弾，敵機の数をスコアとして表示するクラス
@@ -253,6 +279,7 @@ def main():
     beams = pg.sprite.Group()
     exps = pg.sprite.Group()
     emys = pg.sprite.Group()
+    gravities = pg.sprite.Group()
 
     tmr = 0
     clock = pg.time.Clock()
@@ -263,6 +290,10 @@ def main():
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+            if event.type == pg.KEYDOWN and event.key == pg.K_RETURN and score.value >= 200:
+                if len(gravities) == 0:
+                    score.value -= 200
+                    gravities.add(Gravity())
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
@@ -288,6 +319,15 @@ def main():
             pg.display.update()
             time.sleep(2)
             return
+        
+        for bomb in pg.sprite.groupcollide(bombs, gravities, True, False).keys():
+            exps.add(Explosion(bomb, 50))
+        for enemy in pg.sprite.groupcollide(emys, gravities, True, False).keys():
+            exps.add(Explosion(enemy, 50))
+        # for bomb in pg.sprite.groupcollide(bombs, gravities, False, True).keys():
+        #     exps.add(Explosion(bomb, 50))
+        # for enemy in pg.sprite.groupcollide(emys, gravities, False, True).keys():
+        #     exps.add(Explosion(enemy, 50))
 
         bird.update(key_lst, screen)
         beams.update()
@@ -296,6 +336,8 @@ def main():
         emys.draw(screen)
         bombs.update()
         bombs.draw(screen)
+        gravities.update()
+        gravities.draw(screen)
         exps.update()
         exps.draw(screen)
         score.update(screen)
