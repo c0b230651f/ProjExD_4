@@ -305,12 +305,6 @@ def main():
                 time.sleep(2)
                 return
 
-        # if key_lst[pg.K_RSHIFT]:
-        #     if score.value >= 100:
-        #         score.value -= 100
-        #         bird.state = "hyper"
-        #         bird.hyper_life = 500
-
         bird.update(key_lst, screen)
         beams.update()
         beams.draw(screen)
