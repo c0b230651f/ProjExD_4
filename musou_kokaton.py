@@ -270,6 +270,11 @@ def main():
                 return 0
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beams.add(Beam(bird))
+            if event.type == pg.KEYDOWN and event.key == pg.K_RSHIFT:
+                if score.value >= 100:
+                    score.value -= 100
+                    bird.state = "hyper"
+                    bird.hyper_life = 500
         screen.blit(bg_img, [0, 0])
 
         if tmr%200 == 0:  # 200フレームに1回，敵機を出現させる
@@ -300,11 +305,11 @@ def main():
                 time.sleep(2)
                 return
 
-        if key_lst[pg.K_RSHIFT]:
-            if score.value >= 100:
-                score.value -= 100
-                bird.state = "hyper"
-                bird.hyper_life = 500
+        # if key_lst[pg.K_RSHIFT]:
+        #     if score.value >= 100:
+        #         score.value -= 100
+        #         bird.state = "hyper"
+        #         bird.hyper_life = 500
 
         bird.update(key_lst, screen)
         beams.update()
